@@ -15,6 +15,7 @@ export default function OrderMedicinePage() {
   });
 
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const savedCity = localStorage.getItem("quickmeds_city");
@@ -64,9 +65,40 @@ export default function OrderMedicinePage() {
     formData.city.trim() &&
     formData.pincode.trim();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isFormValid) return;
-    router.push("/services/medicine-delivery/order/success");
+
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          pincode: formData.pincode,
+          hasPrescription: !!file,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        router.push("/services/medicine-delivery/order/success");
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Server error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -213,15 +245,15 @@ export default function OrderMedicinePage() {
   </div>
 
   <button
-    disabled={!isFormValid}
+    disabled={!isFormValid || loading}
     onClick={handleSubmit}
     className={`mt-6 inline-flex items-center px-8 py-3 rounded-full text-lg font-semibold ${
-      isFormValid
+      isFormValid && !loading
         ? "bg-green-600 hover:bg-green-700 text-white"
         : "bg-gray-300 text-gray-600 cursor-not-allowed"
     }`}
   >
-    Confirm Order
+    {loading ? "Processing..." : "Confirm Order"}
   </button>
 </div>
         </div>
@@ -255,15 +287,15 @@ export default function OrderMedicinePage() {
           </div>
 
           <button
-            disabled={!isFormValid}
+            disabled={!isFormValid || loading}
             onClick={handleSubmit}
             className={`mt-6 w-full py-3 rounded-full font-semibold ${
-              isFormValid
+              isFormValid && !loading
                 ? "bg-green-600 hover:bg-green-700 text-white"
                 : "bg-gray-300 text-gray-600 cursor-not-allowed"
             }`}
           >
-            Confirm & Place Order
+            {loading ? "Processing..." : "Confirm & Place Order"}
           </button>
 
           <p className="mt-3 text-xs text-gray-500 text-center">

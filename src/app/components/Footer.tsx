@@ -1,3 +1,7 @@
+import { group } from "console";
+import { feMergeNode } from "framer-motion/client";
+import { projectInvalidateFileSystemCache } from "next/dist/build/swc/generated-native";
+
 export default function Footer() {
   return (
     <footer className="bg-slate-900 text-gray-300">

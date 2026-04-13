@@ -3,12 +3,18 @@ import { createClient } from "@supabase/supabase-js";
 
 import { sendWhatsAppMessage } from "@/lib/whatsapp";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.SUPABASE_SERVICE_ROLE_KEY as string
-);
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !key) {
+    return NextResponse.json({ success: false, message: "No Supabase URL" }, { status: 500 });
+  }
+
+  const supabase = createClient(url, key);
+
   try {
     const body = await req.json();
     const { order_id, status } = body;

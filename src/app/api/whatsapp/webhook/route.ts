@@ -42,17 +42,17 @@ export async function POST(req: Request) {
           // Since we are mocking order placement for the AI's MVP form:
           console.log(`[Order Intent Captured] Phone: ${from}`, orderDetails);
           
-          return \`Order successfully processed for \${orderDetails.medicines.join(", ")}. It will be shipped to \${orderDetails.name} at \${orderDetails.address}, \${orderDetails.city} (\${orderDetails.pincode}).\`;
+          return `Order successfully processed for ${orderDetails.medicines.join(", ")}. It will be shipped to ${orderDetails.name} at ${orderDetails.address}, ${orderDetails.city} (${orderDetails.pincode}).`;
         });
 
         // 📤 Send response back to the user via WhatsApp Graph API
         const accessToken = process.env.WHATSAPP_CLOUD_ACCESS_TOKEN;
         const apiVersion = "v19.0"; // Adjust Meta Graph API version if necessary
         
-        const res = await fetch(\`https://graph.facebook.com/\${apiVersion}/\${phoneNumberId}/messages\`, {
+        const res = await fetch(`https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`, {
           method: "POST",
           headers: {
-            "Authorization": \`Bearer \${accessToken}\`,
+            "Authorization": `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({

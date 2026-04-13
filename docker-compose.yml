@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Main Healthcare App (Includes Express API, Socket.io, Cron Jobs)
+  inventory-api:
+    build: 
+      context: ./inventory-api
+    ports:
+      - "5000:5000"
+    environment:
+      # Automatically linking sibling Docker networks without IP addresses
+      - MONGODB_URI=mongodb://mongo:27017/quickmeds_inventory
+      - REDIS_URL=redis://redis:6379
+      # Cloud service secrets loaded from host server .env
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    depends_on:
+      - mongo
+      - redis
+    restart: unless-stopped
+
+  # MongoDB Container for persistent local caching if not using Atlas
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  # Redis Cluster for caching Geo Queries instantly
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+volumes:
+  # Prevents DB resets if the container shuts down
+  mongo_data:

@@ -1,12 +1,34 @@
 "use client";
 
-import { useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 export default function OrderSuccessPage() {
-  const orderId = useMemo(() => {
-    return "QM-" + Math.random().toString(36).substring(2, 10).toUpperCase();
-  }, []);
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("orderId");
+
+  if (!orderId) {
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-green-50 px-6">
+        <div className="max-w-xl w-full bg-white rounded-3xl p-10 text-center shadow-lg">
+          <h1 className="text-2xl font-bold text-gray-900">
+            Invalid Order Access
+          </h1>
+          <p className="mt-4 text-gray-600">
+            No order ID was provided. Please place a new order.
+          </p>
+          <div className="mt-6">
+            <Link
+              href="/services/medicine-delivery"
+              className="inline-flex justify-center rounded-full bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold"
+            >
+              Place Order
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-green-50 px-6">
@@ -30,7 +52,7 @@ export default function OrderSuccessPage() {
         <div className="mt-6 rounded-xl bg-gray-50 p-4">
           <p className="text-sm text-gray-500">Order ID</p>
           <p className="mt-1 text-lg font-semibold text-gray-900">
-            {orderId}
+            {orderId ?? "Not Available"}
           </p>
         </div>
 

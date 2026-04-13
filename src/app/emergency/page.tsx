@@ -2,100 +2,96 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { Ambulance, Phone } from "lucide-react";
 import mapImage from "../assets/map-placeholder.png";
 
 export default function EmergencyPage() {
   return (
-    <section className="fixed inset-0 z-50 bg-red-50 flex items-center justify-center px-6">
-      <div className="max-w-4xl w-full bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
+    <div className="fixed inset-0 z-[100] bg-white flex items-center justify-center px-6 overflow-auto pt-16">
+      <div className="max-w-xl w-full text-center py-10">
 
-        {/* SOS ICON */}
+        {/* SOS Pulse Icon */}
         <motion.div
-          className="mx-auto w-24 h-24 rounded-full bg-red-600 text-white flex items-center justify-center text-3xl font-bold"
-          animate={{ scale: [1, 1.1, 1] }}
+          className="mx-auto w-24 h-24 rounded-full bg-emergency flex items-center justify-center text-white font-black text-2xl shadow-lg relative"
+          animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 1.2, repeat: Infinity }}
         >
-          SOS
+          <div className="absolute inset-0 rounded-full bg-emergency opacity-30 animate-ping" />
+          <span className="relative z-10">SOS</span>
         </motion.div>
 
-        {/* STATUS TEXT */}
         <motion.h1
-          className="mt-8 text-2xl md:text-3xl font-bold text-gray-900"
-          initial={{ opacity: 0, y: 20 }}
+          className="mt-8 text-3xl font-bold text-brand-navy"
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          Finding the nearest ambulance…
+          Finding Nearest Ambulance...
         </motion.h1>
 
-        <p className="mt-4 text-gray-600">
-          Please stay calm. We are locating the fastest available ambulance near you.
+        <p className="mt-3 text-textSecondary">
+          Please stay calm. We&apos;re locating the fastest available ambulance near you.
         </p>
 
-        <p className="mt-2 text-sm text-green-600 font-medium">
-          📍 Location detected. Sharing live coordinates with ambulance.
+        <p className="mt-2 text-sm text-brand-greenDark font-semibold bg-brand-greenLight px-4 py-2 rounded-full inline-block">
+          📍 Location detected — sharing with ambulance
         </p>
 
-        {/* LOADING DOTS */}
-        <motion.div
-          className="flex justify-center gap-2 mt-6"
-          animate={{ opacity: [0.3, 1, 0.3] }}
-          transition={{ duration: 1.4, repeat: Infinity }}
-        >
-          <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-          <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-          <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-        </motion.div>
-
-        {/* MAP PREVIEW */}
-        <div className="mt-10 rounded-xl overflow-hidden border relative">
+        {/* Map preview */}
+        <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 relative shadow-card">
           <Image
             src={mapImage}
-            alt="Finding nearest ambulance"
+            alt="Finding nearest ambulance on map"
             className="w-full"
             priority
           />
           <motion.div
-            className="absolute top-1/2 left-0 -translate-y-1/2 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow"
+            className="absolute top-1/2 left-0 -translate-y-1/2 bg-emergency text-white px-3 py-1.5 rounded-full text-xs font-bold shadow"
             initial={{ x: "-20%" }}
             animate={{ x: "120%" }}
-            transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
           >
-            🚑 Ambulance
+            <Ambulance className="w-4 h-4 flex-shrink-0" /> Ambulance
           </motion.div>
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="tel:108"
-            className="bg-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-700 transition"
-          >
-            Call Ambulance
-          </a>
-          <a
-            href="tel:112"
-            className="bg-gray-900 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition"
-          >
-            Call Hospital
-          </a>
+        {/* Status bar */}
+        <div className="mt-6">
+          <div className="flex items-center justify-between text-xs text-textMuted mb-2">
+            <span>Locating...</span>
+            <span>ETA: Calculating</span>
+          </div>
+          <div className="h-2.5 w-full bg-gray-100 rounded-full overflow-hidden border border-gray-200">
+            <motion.div
+              className="h-full bg-emergency rounded-full"
+              initial={{ width: "0%" }}
+              animate={{ width: "80%" }}
+              transition={{ duration: 5, ease: "easeOut" }}
+            />
+          </div>
         </div>
 
-        {/* STATUS BAR */}
-        <motion.div
-          className="mt-8 h-3 w-full bg-gray-200 rounded-full overflow-hidden"
-        >
-          <motion.div
-            className="h-full bg-red-600"
-            initial={{ width: "0%" }}
-            animate={{ width: "75%" }}
-            transition={{ duration: 3, ease: "easeInOut" }}
-          />
-        </motion.div>
+        {/* Action buttons */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href="tel:108"
+            className="btn-emergency flex items-center justify-center gap-2 text-base px-8 py-3.5"
+          >
+            <Phone className="w-5 h-5 flex-shrink-0" /> Call 108 — Ambulance
+          </a>
+          <Link
+            href="/"
+            className="btn-outline flex items-center justify-center gap-2 text-base px-8 py-3.5"
+          >
+            Cancel
+          </Link>
+        </div>
 
-        <p className="mt-3 text-sm text-gray-500">
-          ETA will be shown shortly…
+        <p className="mt-6 text-xs text-textMuted">
+          If this is a life-threatening emergency, also call <strong>112</strong> for police assistance.
         </p>
       </div>
-    </section>
+    </div>
   );
 }
